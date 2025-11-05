@@ -22,15 +22,20 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
-import me.f1reking.serialportlib.entity.BAUDRATE;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.LinearLayoutCompat;
+
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+
+import me.f1reking.serialportlib.SerialPortHelper;
 import me.f1reking.serialportlib.entity.DATAB;
 import me.f1reking.serialportlib.entity.FLOWCON;
 import me.f1reking.serialportlib.entity.PARITY;
 import me.f1reking.serialportlib.entity.STOPB;
-import java.io.File;
-import java.util.Arrays;
-import me.f1reking.serialportlib.SerialPortHelper;
 import me.f1reking.serialportlib.listener.IOpenSerialPortListener;
 import me.f1reking.serialportlib.listener.ISerialPortDataListener;
 import me.f1reking.serialportlib.listener.Status;
@@ -48,8 +53,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected Button btnSend;
     protected Button btnOpen;
     protected Button btnClose;
+    private AppCompatTextView tv_log;
 
     private SerialPortHelper mSerialPortHelper;
+    private LinearLayoutCompat log_root;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,9 +82,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void open() {
         if (mSerialPortHelper == null) {
             mSerialPortHelper = new SerialPortHelper();
-            mSerialPortHelper.setPort("/dev/ttyUSB0");
-            mSerialPortHelper.setBaudRate(120);
-            mSerialPortHelper.setStopBits(STOPB.getStopBit(STOPB.B2));
+            mSerialPortHelper.setPort("/dev/ttyS0");
+            mSerialPortHelper.setBaudRate(115200);
+            mSerialPortHelper.setStopBits(STOPB.getStopBit(STOPB.B1));
             mSerialPortHelper.setDataBits(DATAB.getDataBit(DATAB.CS8));
             mSerialPortHelper.setParity(PARITY.getParity(PARITY.NONE));
             mSerialPortHelper.setFlowCon(FLOWCON.getFlowCon(FLOWCON.NONE));
@@ -112,10 +119,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 });
             }
         });
+        StringBuilder sb = new StringBuilder();
         mSerialPortHelper.setISerialPortDataListener(new ISerialPortDataListener() {
             @Override
             public void onDataReceived(byte[] bytes) {
-                Log.i(TAG, "onDataReceived: " + Arrays.toString(bytes));
+                /*byte[] test = new byte[]{};
+                for (int y = 0; y < 100; y++) {
+                    test = mergeByteArrays(test, bytes);
+                }*/
+                String str = new String(bytes, StandardCharsets.UTF_8);
+                sb.append(System.currentTimeMillis() + "--" + str);
+                sb.append("\n");
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        tv_log.setText("");
+                        tv_log.setText(sb.toString());
+                        /*AppCompatTextView appCompatTextView = new AppCompatTextView(MainActivity.this);
+                        appCompatTextView.setText(str);
+                        log_root.addView(appCompatTextView);*/
+                    }
+                });
+//                Log.i(TAG, "onDataReceived: " + Arrays.toString(bytes));
+                Log.i(TAG, "onDataReceived: " + str);
             }
 
             @Override
@@ -138,8 +165,51 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnSend.setOnClickListener(MainActivity.this);
         btnOpen = (Button) findViewById(R.id.btn_open);
         btnOpen.setOnClickListener(MainActivity.this);
+        tv_log = findViewById(R.id.tv_log);
         btnClose = (Button) findViewById(R.id.btn_close);
         btnClose.setOnClickListener(MainActivity.this);
+        log_root = findViewById(R.id.log_root);
 
+    }
+
+    /**
+     * 合并多个 byte 数组
+     *
+     * @param arrays 待合并的 byte 数组（支持任意数量，可含空数组或 null）
+     * @return 合并后的新 byte 数组
+     */
+    public static byte[] mergeByteArrays(byte[]... arrays) {
+        if (arrays == null || arrays.length == 0) {
+            return new byte[0]; // 空输入返回空数组
+        }
+
+        // 1. 计算总长度（跳过 null 和空数组）
+        int totalLength = 0;
+        for (byte[] array : arrays) {
+            if (array != null) {
+                totalLength += array.length;
+            }
+        }
+
+        // 2. 创建总长度的新数组
+        byte[] result = new byte[totalLength];
+
+        // 3. 依次复制各数组元素到新数组
+        int offset = 0; // 偏移量：记录当前复制到新数组的位置
+        for (byte[] array : arrays) {
+            if (array != null && array.length > 0) {
+                // 从 array 的 0 位置，复制 array.length 个元素到 result 的 offset 位置
+                System.arraycopy(array, 0, result, offset, array.length);
+                offset += array.length; // 更新偏移量
+            }
+        }
+
+        return result;
+    }
+
+    @Override
+    public void onBackPressed() {
+        Toast.makeText(this, "使用Home或Menu退出？", Toast.LENGTH_SHORT).show();
+//        super.onBackPressed();
     }
 }

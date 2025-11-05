@@ -22,9 +22,15 @@ android {
     defaultConfig {
         applicationId "me.f1reking.android_serialport"
         minSdkVersion 16
-        targetSdkVersion 29
+        targetSdkVersion 31
         versionCode 1
         versionName "1.0"
+        ndk {
+            // 警告：无特殊情况不要改这里了  armeabi：万金油架构平台（占用率：0%）
+            // armeabi-v7a：开发板应用 仅选择  ；曾经主流的架构平台（占用率：10%）
+            // arm64-v8a：普通手机应用 仅选择 ；目前主流架构平台（占用率：95%）
+            abiFilters 'armeabi-v7a',"arm64-v8a"
+        }
     }
     buildTypes {
         release {
