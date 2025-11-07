@@ -82,8 +82,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void open() {
         if (mSerialPortHelper == null) {
             mSerialPortHelper = new SerialPortHelper();
-            mSerialPortHelper.setPort("/dev/ttyS0");
-            mSerialPortHelper.setBaudRate(115200);
+            mSerialPortHelper.setPort("/dev/ttyS2");
+            mSerialPortHelper.setBaudRate(19200);
             mSerialPortHelper.setStopBits(STOPB.getStopBit(STOPB.B1));
             mSerialPortHelper.setDataBits(DATAB.getDataBit(DATAB.CS8));
             mSerialPortHelper.setParity(PARITY.getParity(PARITY.NONE));
@@ -127,8 +127,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 for (int y = 0; y < 100; y++) {
                     test = mergeByteArrays(test, bytes);
                 }*/
-                String str = new String(bytes, StandardCharsets.UTF_8);
-                sb.append(System.currentTimeMillis() + "--" + str);
+//                String str = new String(bytes, StandardCharsets.UTF_8);
+                String str=Util.bytesToHex(bytes);
+                sb.append(Util.formatCurrentTime("HH:mm:ss") + "--" + str);
                 sb.append("\n");
 
                 runOnUiThread(new Runnable() {
