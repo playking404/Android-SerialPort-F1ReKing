@@ -36,7 +36,7 @@ import me.f1reking.serialportlib.listener.ISerialPortDataListener;
 import me.f1reking.serialportlib.listener.Status;
 import me.f1reking.serialportlib.util.ByteUtils;
 
-/**
+/** 串口助手类
  * @author F1ReKing
  * @date 2019/11/1 09:38
  * @Description

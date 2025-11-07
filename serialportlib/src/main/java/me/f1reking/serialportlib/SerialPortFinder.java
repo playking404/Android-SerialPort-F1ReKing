@@ -16,6 +16,7 @@
 package me.f1reking.serialportlib;
 
 import android.util.Log;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -24,10 +25,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+
 import me.f1reking.serialportlib.entity.Device;
 import me.f1reking.serialportlib.entity.Driver;
 
 /**
+ * 串口搜索
+ *
  * @author F1ReKing
  * @date 2019/10/31 18:41
  * @Description
@@ -58,7 +62,7 @@ public class SerialPortFinder {
             String driverName = readLine.substring(0, 0x15).trim();
             String[] fields = readLine.split(" +");
             if ((fields.length >= 5) && (fields[fields.length - 1].equals(SERIAL_FIELD))) {
-                Log.d(TAG, "Found new driver " + driverName + " on " + fields[fields.length - 4]);
+                Log.v(TAG, "Found new driver " + driverName + " on " + fields[fields.length - 4]);
                 drivers.add(new Driver(driverName, fields[fields.length - 4]));
             }
         }

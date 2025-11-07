@@ -15,10 +15,14 @@
  */
 package me.f1reking.serialportlib;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.io.InputStream;
 
 /**
+ * 串口数据接收线程
+ *
  * @author F1ReKing
  * @date 2019/11/1 11:43
  * @Description
@@ -32,7 +36,7 @@ public abstract class SerialPortReceivedThread extends Thread {
 
     public SerialPortReceivedThread(InputStream inputStream) {
         mInputStream = inputStream;
-        mReceivedBuffer = new byte[1024];
+        mReceivedBuffer = new byte[4096];
     }
 
     @Override
@@ -50,8 +54,10 @@ public abstract class SerialPortReceivedThread extends Thread {
                 byte[] receivedBytes = new byte[size];
                 System.arraycopy(mReceivedBuffer, 0, receivedBytes, 0, size);
                 onDataReceived(receivedBytes);
+//                Log.i(TAG, "一次收到 run: " + new String(receivedBytes));
             } catch (IOException e) {
-                e.printStackTrace();
+//                e.printStackTrace();
+                Log.e(TAG, "IOException: " + e.getLocalizedMessage());
             }
         }
     }

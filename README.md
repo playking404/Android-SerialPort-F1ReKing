@@ -2,7 +2,8 @@
 此项目移植于谷歌官方串口库[android-serialport-api](https://code.google.com/archive/p/android-serialport-api/),但该项目仅支持串口名称及波特率，所以在项目的基础上添加支持数据位、数据位、停止位、流控等配置。
 
 [![](https://jitpack.io/v/F1ReKing/Android-SerialPort.svg)](https://jitpack.io/#F1ReKing/Android-SerialPort)
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/F1ReKing/Android-SerialPort/blob/master/LICENSE)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/F1ReKing/Android-SerialPort/blob/master/LICENSE)  
+maven https://mvnrepository.com/artifact/com.github.F1ReKing/Android-SerialPort 
 
 ## 下载
 <a href='https://play.google.com/store/apps/details?id=me.f1reking.serialporttool&utm_source=global_co&utm_medium=prtnr&utm_content=Mar2515&utm_campaign=PartBadge&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width=200 height=77/></a>
@@ -29,7 +30,8 @@ Add it in your root build.gradle at the end of repositories:
 **Step 2.** Add the dependency
 
 
-	dependencies {
+	dependencies { 
+            api("com.github.F1ReKing:Android-SerialPort:1.6.0")
 	        implementation 'com.github.F1ReKing:Android-SerialPort:1.5.1'
 	}
 
